@@ -1,0 +1,21 @@
+---
+# The message contents used in MvvServiceTest class
+translateAndSetControlServiceConstants:
+  - title: A properly initialized entry
+    expected_outcome: '{replicas=2.0}'
+    solution: |
+      { "replicas": 2.0 }
+
+  - title: Extra solution
+    expected_outcome: '{replicas=1.0}'
+    solution: |
+      { "replicas": 2.0, "replicas": 1.0 }
+
+  - title: Empty solution
+    expected_outcome: '{}'
+    solution: |
+      { }
+
+  - title: Null solution
+    expected_outcome: '{}'
+    solution: null
