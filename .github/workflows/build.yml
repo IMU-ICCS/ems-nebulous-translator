@@ -91,6 +91,7 @@ jobs:
           docker buildx build \
             -f ems-main/Dockerfile \
             --target ems-server \
+            -t ${EMS_CORE_IMAGE}:${{ steps.ver.outputs.core_version }} \
             -t ${REGISTRY}/${EMS_CORE_IMAGE}:${{ steps.ver.outputs.core_version }} \
             -t ${REGISTRY}/${EMS_CORE_IMAGE}:latest \
             ems-main \
@@ -116,7 +117,7 @@ jobs:
         run: |
           docker buildx build \
             --target ems-server-with-nebulous-translator \
-            --build-arg EMS_CORE_IMAGE=${REGISTRY}/${EMS_CORE_IMAGE}:${{ steps.ver.outputs.core_version }} \
+            --build-arg EMS_CORE_IMAGE=${EMS_CORE_IMAGE}:${{ steps.ver.outputs.core_version }} \
             --build-arg EMS_CORE_BUILDER_IMAGE=${EMS_CORE_IMAGE}-core-builder:latest \
             -t ${REGISTRY}/${EMS_NEBULOUS_IMAGE}:${{ steps.ver.outputs.plugin_version }} \
             -t ${REGISTRY}/${EMS_NEBULOUS_IMAGE}:latest \
