@@ -116,15 +116,10 @@ jobs:
       # -----------------------------
       - name: EMS server + Nebulous plugin
         run: |
-          docker images
-          echo "------------------------------------------------------------"
-          
           sed -i \
             -e 's|FROM \$EMS_CORE_BUILDER_IMAGE|FROM core_builder|' \
             -e 's|FROM \$EMS_CORE_IMAGE|FROM core|' \
             Dockerfile
-          cat Dockerfile
-          echo "------------------------------------------------------------"
           
           docker buildx use default
           
