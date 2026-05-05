@@ -125,7 +125,9 @@ jobs:
             Dockerfile
           cat Dockerfile
           echo "------------------------------------------------------------"
-                    
+          
+          docker buildx use default
+          
           docker buildx build \
             --progress=plain \
             --build-context core=docker-image://${EMS_CORE_IMAGE}:${{ steps.ver.outputs.core_version }} \
@@ -133,8 +135,8 @@ jobs:
             --target ems-server-with-nebulous-translator \
             -t ${REGISTRY}/${EMS_NEBULOUS_IMAGE}:${{ steps.ver.outputs.plugin_version }} \
             -t ${REGISTRY}/${EMS_NEBULOUS_IMAGE}:latest \
-            . \
-            --load
+            --load \
+            .
 
       # -----------------------------
       # 9. LOGIN (ONLY BEFORE PUSH)
