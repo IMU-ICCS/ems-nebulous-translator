@@ -167,19 +167,18 @@ jobs:
       # -----------------------------
       - name: Make images public
         run: |
-          gh api \
-            --method PATCH \
-            /orgs/IMU-ICCS/packages/container/${EMS_CORE_IMAGE}/visibility \
-            -f visibility=public
+          for pkg in "$EMS_CORE_IMAGE" "$EMS_CLIENT_IMAGE" "$EMS_NEBULOUS_IMAGE"; do
+            gh api /orgs/IMU-ICCS/packages/container/$pkg >/dev/null || {
+              echo "ERROR: GHCR package not found: $pkg"
+            }
+          done
           
-          gh api \
-            --method PATCH \
-            /orgs/IMU-ICCS/packages/container/${EMS_CLIENT_IMAGE}/visibility \
-            -f visibility=public
-          
-          gh api \
-            --method PATCH \
-            /orgs/IMU-ICCS/packages/container/${EMS_NEBULOUS_IMAGE}/visibility \
-            -f visibility=public
+          for pkg in "$EMS_CORE_IMAGE" "$EMS_CLIENT_IMAGE" "$EMS_NEBULOUS_IMAGE"; do
+            echo "Making $pkg public"
+            gh api \
+              --method PATCH \
+              /orgs/IMU-ICCS/packages/container/$pkg/visibility \
+              -f visibility=public
+          done
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
