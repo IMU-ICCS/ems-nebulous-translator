@@ -1,0 +1,118 @@
+name: EMS Platform Build (Core + Client + Nebulous Plugin)
+
+on:
+  push:
+    branches: [ main ]
+    tags:
+      - "v*"
+      - "r*"
+      - "test"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # -----------------------------
+      # 1. Checkout Plugin repo
+      # -----------------------------
+      - uses: actions/checkout@v4
+
+      # -----------------------------
+      # 2. Setup versioning
+      # -----------------------------
+      - name: Compute versions
+        id: ver
+        run: |
+          if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
+            CORE_VERSION="8.0.0-SNAPSHOT"
+            PLUGIN_VERSION="${GITHUB_REF_NAME}"
+          else
+            CORE_VERSION="8.0.0-SNAPSHOT"
+            PLUGIN_VERSION="snapshot-${GITHUB_SHA::7}"
+          fi
+
+          echo "core_version=$CORE_VERSION" >> $GITHUB_OUTPUT
+          echo "plugin_version=$PLUGIN_VERSION" >> $GITHUB_OUTPUT
+
+      # -----------------------------
+      # 3. Checkout EMS core repo
+      # -----------------------------
+      - name: Checkout EMS core
+        run: |
+          set -e
+          
+          EMS_CORE_REPO="https://github.com/IMU-ICCS/ems-main.git"
+          EMS_CORE_BRANCH="${EMS_CORE_BRANCH:-main}"
+          
+          echo "Cloning EMS core:"
+          echo "  repo: $EMS_CORE_REPO"
+          echo "  branch: $EMS_CORE_BRANCH"
+          
+          git clone --depth 1 --branch "$EMS_CORE_BRANCH" "$EMS_CORE_REPO" ems-main
+
+      # -----------------------------
+      # 4. Build CORE builder image
+      # -----------------------------
+      - name: EMS core builder
+        run: |
+          docker build \
+            -f ems-main/Dockerfile \
+            -t ems-server-core-builder \
+            --target ems-server-builder \
+            ems-main
+
+      # -----------------------------
+      # 5. Build EMS core runtime image
+      # -----------------------------
+      - name: EMS server runtime
+        run: |
+          docker build \
+            -f ems-main/Dockerfile \
+            -t ghcr.io/IMU-ICCS/ems-server:${{ steps.ver.outputs.core_version }} \
+            --target ems-server \
+            ems-main
+
+      # -----------------------------
+      # 6. Build EMS client image
+      # -----------------------------
+      - name: EMS client runtime
+        run: |
+          docker build \
+            -f ems-main/Dockerfile \
+            -t ghcr.io/IMU-ICCS/ems-client:${{ steps.ver.outputs.core_version }} \
+            -t ghcr.io/IMU-ICCS/ems-client:latest \
+            --target ems-client \
+            ems-main
+
+      # -----------------------------
+      # 7. Build final EMS server image
+      # -----------------------------
+      - name: EMS server + Nebulous plugin
+        run: |
+          docker build \
+            -t ghcr.io/IMU-ICCS/ems-server-nebulous:${{ steps.ver.outputs.plugin_version }} \
+            -t ghcr.io/IMU-ICCS/ems-server-nebulous:latest \
+            --target ems-server-with-nebulous-translator \
+            .
+
+      # -----------------------------
+      # 8. Login GHCR
+      # -----------------------------
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # -----------------------------
+      # 9. Push images (ONLY final artifacts)
+      # -----------------------------
+      - name: Push images
+        run: |
+          docker push ghcr.io/IMU-ICCS/ems-client:${{ steps.ver.outputs.core_version }}
+          docker push ghcr.io/IMU-ICCS/ems-server:${{ steps.ver.outputs.plugin_version }}
+          docker push ghcr.io/IMU-ICCS/ems-server-nebulous:${{ steps.ver.outputs.plugin_version }}
+          docker push ghcr.io/IMU-ICCS/ems-client:latest
+          docker push ghcr.io/IMU-ICCS/ems-server:latest
+          docker push ghcr.io/IMU-ICCS/ems-server-nebulous:latest
