@@ -115,9 +115,13 @@ jobs:
       # -----------------------------
       - name: EMS server + Nebulous plugin
         run: |
+          docker images
+          echo "------------------------------------------------------------"
+          
           docker buildx build \
+            --build-context core=docker-image://ems-server:${{ steps.ver.outputs.core_version }} \
             --target ems-server-with-nebulous-translator \
-            --build-arg EMS_CORE_IMAGE=${EMS_CORE_IMAGE}:${{ steps.ver.outputs.core_version }} \
+            --build-arg EMS_CORE_IMAGE=core \
             --build-arg EMS_CORE_BUILDER_IMAGE=${EMS_CORE_IMAGE}-core-builder:latest \
             -t ${REGISTRY}/${EMS_NEBULOUS_IMAGE}:${{ steps.ver.outputs.plugin_version }} \
             -t ${REGISTRY}/${EMS_NEBULOUS_IMAGE}:latest \
