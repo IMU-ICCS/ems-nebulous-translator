@@ -8,6 +8,10 @@ on:
       - "r*"
       - "test"
 
+permissions:
+  contents: read
+  packages: write
+
 env:
   REGISTRY: ghcr.io/imu-iccs
 
@@ -27,12 +31,12 @@ jobs:
 
     steps:
       # -----------------------------
-      # 0. Checkout Plugin repo
+      # 1. Checkout Plugin repo
       # -----------------------------
       - uses: actions/checkout@v4
 
       # -----------------------------
-      # 1. VERSIONING (sanitized)
+      # 2. Versioning (sanitized)
       # -----------------------------
       - name: Compute versions
         id: ver
@@ -51,7 +55,7 @@ jobs:
           echo "core_version=${CORE_VERSION}" >> $GITHUB_OUTPUT
 
       # -----------------------------
-      # 2. PRE-BUILD VALIDATION
+      # 3. Pre-build validation
       # -----------------------------
       - name: Validate naming
         run: |
@@ -61,19 +65,19 @@ jobs:
           echo "${{ steps.ver.outputs.plugin_version }}" | grep -q '[A-Z]' && exit 1 || true
 
       # -----------------------------
-      # 3. CLONE CORE
+      # 4. Clone EMS server core
       # -----------------------------
       - name: Checkout EMS core
         run: |
           git clone --depth 1 --branch "${EMS_CORE_BRANCH}" "${EMS_CORE_REPO}" ems-main
 
       # -----------------------------
-      # 4. SETUP BUILDX (multi-arch)
+      # 5. Setup buildx (multi-arch)
       # -----------------------------
       - uses: docker/setup-buildx-action@v3
 
       # -----------------------------
-      # 5. BUILD CORE BUILDER IMAGE
+      # 6. Build EMS core builder image
       # -----------------------------
       - name: EMS core builder
         run: |
@@ -85,7 +89,7 @@ jobs:
             --load
 
       # -----------------------------
-      # 6. BUILD CORE RUNTIME IMAGE
+      # 7. Build EMS server core runtime image
       # -----------------------------
       - name: EMS server runtime
         run: |
@@ -99,7 +103,7 @@ jobs:
             --load
 
       # -----------------------------
-      # 7. BUILD CLIENT IMAGE
+      # 8. Build EMS client runtime image
       # -----------------------------
       - name: EMS client runtime
         run: |
@@ -112,7 +116,7 @@ jobs:
             --load
 
       # -----------------------------
-      # 8. BUILD NEBULOUS IMAGE
+      # 9. Build EMS server + Nebulous translator runtime image
       # -----------------------------
       - name: EMS server + Nebulous plugin
         run: |
@@ -134,7 +138,7 @@ jobs:
             .
 
       # -----------------------------
-      # 9. LOGIN (ONLY BEFORE PUSH)
+      # 10. Login (only before push)
       # -----------------------------
       - uses: docker/login-action@v3
         with:
@@ -143,7 +147,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       # -----------------------------
-      # 10. PUSH EVERYTHING (FINAL STEP ONLY)
+      # 11. Push everything (final step only)
       # -----------------------------
       - name: Push all images
         run: |
@@ -157,3 +161,25 @@ jobs:
 
           docker push ${REGISTRY}/${EMS_NEBULOUS_IMAGE}:${{ steps.ver.outputs.plugin_version }}
           docker push ${REGISTRY}/${EMS_NEBULOUS_IMAGE}:latest
+
+      # -----------------------------
+      # 12. Make images public
+      # -----------------------------
+      - name: Make images public
+        run: |
+          gh api \
+            --method PATCH \
+            /orgs/IMU-ICCS/packages/container/${EMS_CORE_IMAGE}/visibility \
+            -f visibility=public
+          
+          gh api \
+            --method PATCH \
+            /orgs/IMU-ICCS/packages/container/${EMS_CLIENT_IMAGE}/visibility \
+            -f visibility=public
+          
+          gh api \
+            --method PATCH \
+            /orgs/IMU-ICCS/packages/container/${EMS_NEBULOUS_IMAGE}/visibility \
+            -f visibility=public
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
