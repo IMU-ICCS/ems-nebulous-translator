@@ -128,8 +128,8 @@ jobs:
                     
           docker buildx build \
             --progress=plain \
-            --build-context core=${EMS_CORE_IMAGE}:${{ steps.ver.outputs.core_version }} \
-            --build-context core_builder=${EMS_CORE_BUILDER_IMAGE}:latest \
+            --build-context core=docker-image://${EMS_CORE_IMAGE}:${{ steps.ver.outputs.core_version }} \
+            --build-context core_builder=docker-image://${EMS_CORE_BUILDER_IMAGE}:latest \
             --target ems-server-with-nebulous-translator \
             -t ${REGISTRY}/${EMS_NEBULOUS_IMAGE}:${{ steps.ver.outputs.plugin_version }} \
             -t ${REGISTRY}/${EMS_NEBULOUS_IMAGE}:latest \
