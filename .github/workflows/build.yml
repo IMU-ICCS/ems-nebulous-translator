@@ -161,24 +161,3 @@ jobs:
 
           docker push ${REGISTRY}/${EMS_NEBULOUS_IMAGE}:${{ steps.ver.outputs.plugin_version }}
           docker push ${REGISTRY}/${EMS_NEBULOUS_IMAGE}:latest
-
-      # -----------------------------
-      # 12. Make images public
-      # -----------------------------
-      - name: Make images public
-        run: |
-          for pkg in "$EMS_CORE_IMAGE" "$EMS_CLIENT_IMAGE" "$EMS_NEBULOUS_IMAGE"; do
-            gh api /orgs/IMU-ICCS/packages/container/$pkg >/dev/null || {
-              echo "ERROR: GHCR package not found: $pkg"
-            }
-          done
-          
-          for pkg in "$EMS_CORE_IMAGE" "$EMS_CLIENT_IMAGE" "$EMS_NEBULOUS_IMAGE"; do
-            echo "Making $pkg public"
-            gh api \
-              --method PATCH \
-              /orgs/IMU-ICCS/packages/container/$pkg/visibility \
-              -f visibility=public
-          done
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
