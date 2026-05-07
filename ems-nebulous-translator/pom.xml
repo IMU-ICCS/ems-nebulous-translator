@@ -26,6 +26,11 @@
 
         <maven-compiler.version>3.15.0</maven-compiler.version>
 
+        <!-- Git metadata - fallback values -->
+        <git.commit.id.full>${env.GIT_COMMIT}</git.commit.id.full>
+        <git.branch>${env.GIT_BRANCH}</git.branch>
+        <git.remote.origin.url>${env.GIT_URL}</git.remote.origin.url>
+
         <!-- EMS versions -->
         <ems.version>8.0.0-SNAPSHOT</ems.version>
 
@@ -124,6 +129,14 @@
 
     <build>
         <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <targetPath>${project.build.directory}</targetPath>
+                <filtering>true</filtering>
+                <includes>
+                    <include>banner.txt</include>
+                </includes>
+            </resource>
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>false</filtering>

@@ -1,0 +1,8 @@
+
+${AnsiColor.009}                  ==========  EMS Nebulous Translator plugin metadata  ==========
+${AnsiColor.013} :: Build Num.  :: ${AnsiColor.12}@buildNumber@
+${AnsiColor.013} :: Build Date  :: ${AnsiColor.12}@timestamp@
+${AnsiColor.013} :: SCM Branch  :: ${AnsiColor.12}@git.branch@,   commit: @git.commit.id.full@
+${AnsiColor.013} :: SCM Repos.  :: ${AnsiColor.12}@git.remote.origin.url@
+${AnsiColor.013} :: Image Tag   :: ${AnsiColor.12}@docker.image-nebulous@
+${AnsiColor.013} :: Description :: ${AnsiColor.12}@build.description@ ${AnsiColor.DEFAULT}${AnsiStyle.NORMAL}
