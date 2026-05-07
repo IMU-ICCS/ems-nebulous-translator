@@ -26,6 +26,11 @@
 
         <maven-compiler.version>3.15.0</maven-compiler.version>
 
+        <!-- Build timestamp -->
+        <timestamp>${maven.build.timestamp}</timestamp>
+        <buildTimestamp>${maven.build.timestamp}</buildTimestamp>
+        <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ssZ</maven.build.timestamp.format>
+
         <!-- Git metadata - fallback values -->
         <git.commit.id.full>${env.GIT_COMMIT}</git.commit.id.full>
         <git.branch>${env.GIT_BRANCH}</git.branch>
@@ -161,7 +166,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Plugins for getting Buildnumber and Git info -->
+            <!-- Plugins for getting Buildnumber and Git metadata -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>buildnumber-maven-plugin</artifactId>
@@ -184,16 +189,51 @@
                 </executions>
                 <configuration>
                     <outputDirectory>${project.build.directory}</outputDirectory>
-                    <!--<format>{0,number,integer}</format>-->
-                    <timestampFormat>yyyy-MM-dd HH:mm:ss.SSSZ</timestampFormat>
-                    <revisionOnScmFailure>${project.version}</revisionOnScmFailure>
+
+                    <!-- Limit revision length -->
+                    <shortRevisionLength>8</shortRevisionLength>
+                    <revisionOnScmFailure>${build.timestamp}</revisionOnScmFailure>
+
+                    <!-- Use timestamp + short revision -->
+                    <format>{0,date,yyyyMMddHHmmss}-{1}</format>
                     <items>
-                        <item>buildNumber</item>
+                        <item>timestamp</item>
+                        <item>scmVersion</item>
                     </items>
                     <doCheck>false</doCheck>
                     <doUpdate>false</doUpdate>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <groupId>gr.iccs.imu.ems</groupId>
+                            <artifactId>baguette-client</artifactId>
+                        </exclude>
+                        <exclude>
+                            <groupId>com.espertech</groupId>
+                            <artifactId>esper</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>build-info</id>
+                        <goals>
+                            <goal>build-info</goal>
+                        </goals>
+                        <configuration>
+                            <additionalProperties>
+                                <buildNumber>${buildNumber}</buildNumber>
+                            </additionalProperties>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <groupId>io.github.git-commit-id</groupId>
                 <artifactId>git-commit-id-maven-plugin</artifactId>
