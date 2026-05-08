@@ -35,15 +35,16 @@ RUN sed -i 's|<module>\.\./ems-main/ems-core</module>|<module>ems-core</module>|
 
 # Download dependencies
 COPY ems-nebulous-translator/pom.xml   ${BUILD_DIR}/ems-nebulous-translator/pom.xml
-RUN --mount=type=cache,target=/root/.m2,id=maven-cache \
-    mvn -B dependency:go-offline
+#RUN --mount=type=cache,target=/root/.m2,id=maven-cache mvn -B dependency:go-offline
+RUN mvn -B dependency:go-offline
 
 # Copy source and .git
 COPY ./.git                    ${BUILD_DIR}/.git
 COPY ems-nebulous-translator   ${BUILD_DIR}/ems-nebulous-translator
 
 # Build plugin
-RUN --mount=type=cache,target=/root/.m2,id=maven-cache \
+#RUN --mount=type=cache,target=/root/.m2,id=maven-cache \
+RUN \
     mvn -B -ntp -rf :ems-nebulous-translator-plugin -DskipTests \
     -Ddocker.image-nebulous=${DOCKER_IMAGE} \
     -Dbuild.description="${BUILD_DESCR}" \
