@@ -87,11 +87,11 @@ jobs:
           cache-to: type=gha,mode=max
 
           build-contexts: |
-            core=docker-image://${{ env.REGISTRY }}/ems-server:${{ env.CORE_VERSION }}
-            core_builder=docker-image://${{ env.REGISTRY }}/ems-server-core-builder:${{ env.CORE_VERSION }}
+            core=docker-image://${REGISTRY}/ems-server:${CORE_VERSION}
+            core_builder=docker-image://${REGISTRY}/ems-server-core-builder:${CORE_VERSION}
 
           tags: |
-            ${{ env.REGISTRY }}/ems-server-nebulous:${{ env.NEBULOUS_VERSION }}
-            ${{ env.REGISTRY }}/ems-server-nebulous:latest
-            ${{ env.REGISTRY }}/ems-server-nebulous:${{ github.sha }}
-            ${{ env.REGISTRY }}/ems-server-nebulous:${{ github.sha }}-${{ steps.metadata.outputs.safe_time }}
+            ${REGISTRY}/ems-server-nebulous:${NEBULOUS_VERSION}
+            ${REGISTRY}/ems-server-nebulous:latest
+            ${REGISTRY}/ems-server-nebulous:${{ github.sha }}
+            ${REGISTRY}/ems-server-nebulous:${{ github.sha }}-${{ steps.metadata.outputs.safe_time }}
