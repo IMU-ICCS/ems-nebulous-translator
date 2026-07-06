@@ -87,8 +87,8 @@ jobs:
           cache-to: type=gha,mode=max
 
           build-contexts: |
-            EMS_CORE_IMAGE=docker-image://${{ env.REGISTRY }}/ems-server:${{ env.CORE_VERSION }}
-            EMS_CORE_BUILDER_IMAGE=docker-image://${{ env.REGISTRY }}/ems-server-core-builder:${{ env.CORE_VERSION }}
+            ems_core_image=docker-image://${{ env.REGISTRY }}/ems-server:${{ env.CORE_VERSION }}
+            ems_core_builder_image=docker-image://${{ env.REGISTRY }}/ems-server-core-builder:${{ env.CORE_VERSION }}
 
           tags: |
             ${{ env.REGISTRY }}/ems-server-nebulous:${{ env.NEBULOUS_VERSION }}

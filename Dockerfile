@@ -7,11 +7,9 @@
 # https://www.mozilla.org/en-US/MPL/2.0/
 #
 
-ARG EMS_CORE_IMAGE=ems-server:8.0.0-SNAPSHOT
-ARG EMS_CORE_BUILDER_IMAGE=ems-server-core-builder:latest
 
 # ----------------- EMS Builder image -----------------
-FROM $EMS_CORE_BUILDER_IMAGE AS ems-nebulous-translator-builder
+FROM ems_core_builder_image AS ems-nebulous-translator-builder
 
 ARG BUILD_DIR=/build
 
@@ -52,7 +50,7 @@ RUN \
 
 
 # -----------------   EMS Server with Nebulous Translator image   -----------------
-FROM $EMS_CORE_IMAGE AS ems-server-with-nebulous-translator
+FROM ems_core_image AS ems-server-with-nebulous-translator
 
 ARG BUILD_DIR=/build
 
