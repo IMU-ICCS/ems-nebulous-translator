@@ -34,7 +34,7 @@ RUN sed -i 's|<module>\.\./ems-main/ems-core</module>|<module>ems-core</module>|
 # Download dependencies
 COPY ems-nebulous-translator/pom.xml   ${BUILD_DIR}/ems-nebulous-translator/pom.xml
 #RUN --mount=type=cache,target=/root/.m2,id=maven-cache mvn -B dependency:go-offline
-RUN mvn -B dependency:go-offline
+RUN mvn -q -B -ntp dependency:go-offline
 
 # Copy source and .git
 COPY ./.git                    ${BUILD_DIR}/.git
