@@ -43,7 +43,7 @@ group "default" {
 }
 
 target "plugin" {
-  context    = "ems-nebulous-translator"
+  context    = "."
   dockerfile = "Dockerfile"
   target     = "ems-server-with-nebulous-translator"
 
