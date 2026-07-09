@@ -26,10 +26,7 @@ ENV GIT_COMMIT=$GIT_COMMIT \
     DOCKER_IMAGE=$DOCKER_IMAGE \
     BUILD_DESCR="$BUILD_DESCR"
 
-WORKDIR ${BUILD_DIR}
-
-COPY pom.xml                   ${BUILD_DIR}/pom.xml
-RUN sed -i 's|<module>\.\./ems-main/ems-core</module>|<module>ems-core</module>|g' ${BUILD_DIR}/pom.xml
+WORKDIR ${BUILD_DIR}/ems-nebulous-translator
 
 # Download dependencies
 COPY ems-nebulous-translator/pom.xml   ${BUILD_DIR}/ems-nebulous-translator/pom.xml
@@ -43,7 +40,7 @@ COPY ems-nebulous-translator   ${BUILD_DIR}/ems-nebulous-translator
 # Build plugin
 #RUN --mount=type=cache,target=/root/.m2,id=maven-cache \
 RUN \
-    mvn -B -ntp -rf :ems-nebulous-translator-plugin -DskipTests \
+    mvn -B -ntp -DskipTests \
     -Ddocker.image-nebulous=${DOCKER_IMAGE} \
     -Dbuild.description="${BUILD_DESCR}" \
     clean install -P '!build-docker-image'
