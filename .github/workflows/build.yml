@@ -13,6 +13,10 @@ on:
     types: [core-published]
   workflow_dispatch: {}
 
+concurrency:
+  group: ems-nebulous-workflow
+  cancel-in-progress: true
+
 permissions:
   contents: read
   packages: write
