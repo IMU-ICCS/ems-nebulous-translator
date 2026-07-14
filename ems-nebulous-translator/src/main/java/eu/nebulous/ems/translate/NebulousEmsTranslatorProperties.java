@@ -58,6 +58,11 @@ public class NebulousEmsTranslatorProperties implements InitializingBean {
     // Busy-Status metric settings
     private String busyStatusDestinationNameFormatter = "busy.%s";
 
+    // MVV settings
+    private String mvvUpdateTopic = "mvv.*";
+    private int mvvUpdateInitialDelaySeconds = 5;
+    private int mvvUpdateRetryDelaySeconds = 10;
+
     // Orphan metrics
     private boolean includeOrphanMetrics = true;
     private String orphanMetricsParentName = "_ORPHANED_METRICS_ROOT_VAR_";

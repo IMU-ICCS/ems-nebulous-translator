@@ -30,6 +30,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 
@@ -158,6 +159,40 @@ public class ShorthandsExpansionHelper implements InitializingBean {
                 .peek(this::prepareReplacementMetric)
                 .toList();
         log.debug("ShorthandsExpansionHelper: As-Is Hacks: {}", metricsWithAsIsHacks);
+
+        // ----- Replace Raw Metrics with sensor = constant with Metric Constant -----
+        List<Object> metricsToConstants = asList(ctx
+                .read("$.spec.*.*.metrics.*[?(@.sensor)]", List.class)).stream()
+                .filter(item -> JsonPath.read(item, "$.sensor.[?(@.type)]")!=null)
+                .filter(item -> Strings.CI.startsWith(
+                        JsonPath.read(item, "$.sensor.type"),
+                        "constant"))
+                .peek(this::writeToMetricConstant)
+                .toList();
+        log.debug("ShorthandsExpansionHelper: Raw metric rewritten as constants: {}", metricsToConstants);
+    }
+
+    private void writeToMetricConstant(Object spec) {
+        log.debug("ShorthandsExpansionHelper.writeToMetricConstant: BEGIN: {}", spec);
+        String name = JsonPath.read(spec, "$.name").toString().trim();
+        String typeStr = JsonPath.read(spec, "$.sensor.type").toString().trim();
+        log.debug("ShorthandsExpansionHelper.writeToMetricConstant: Metric name: {}, type-string: {}", name, typeStr);
+        String[] part = typeStr.split(" ");
+        log.debug("ShorthandsExpansionHelper.writeToMetricConstant: Metric name: {}, type: {}", name, part[0]);
+        double initValue = (part.length > 1)
+                ? Double.parseDouble(part[1].trim()) : 0;
+        log.debug("ShorthandsExpansionHelper.writeToMetricConstant: Metric name: {}, initValue: {}", name, initValue);
+
+        // Replace metric specification with a new Metric Constant
+        Map<String, Object> map = asMap(spec);
+        map.put("type", "constant");
+        map.put("initial", initValue);
+        map.remove("sensor");
+        map.remove("formula");
+        map.remove("window");
+        map.remove("output");
+
+        log.debug("ShorthandsExpansionHelper.writeToMetricConstant: END: spec: {}", spec);
     }
 
     private void prepareReplacementMetric(Object spec) {

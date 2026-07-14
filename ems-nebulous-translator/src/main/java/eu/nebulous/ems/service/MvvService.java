@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MvvService implements MetricVariableValuesService {
 	private final ApplicationContext applicationContext;
-	private Map<String,Double> values = Map.of();
+	private Map<String,Double> values = new LinkedHashMap<>();
 
 	@Override
 	public void init() {
@@ -45,6 +45,7 @@ public class MvvService implements MetricVariableValuesService {
 	public void setValues(@NonNull Map<String,Double> values) {
 		this.values.clear();
 		this.values.putAll(values);
+		setControlServiceConstants(this.values);
 	}
 
 	@Scheduled(fixedRate = 60, timeUnit = TimeUnit.SECONDS)
