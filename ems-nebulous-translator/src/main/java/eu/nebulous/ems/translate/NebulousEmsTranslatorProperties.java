@@ -59,7 +59,7 @@ public class NebulousEmsTranslatorProperties implements InitializingBean {
     private String busyStatusDestinationNameFormatter = "busy.%s";
 
     // MVV settings
-    private String mvvUpdateTopic = "mvv.*";
+    private String mvvUpdateTopic = "mvv.";
     private int mvvUpdateInitialDelaySeconds = 5;
     private int mvvUpdateRetryDelaySeconds = 10;
 

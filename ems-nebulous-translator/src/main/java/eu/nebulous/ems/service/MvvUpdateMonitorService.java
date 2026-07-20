@@ -70,10 +70,10 @@ public class MvvUpdateMonitorService implements InitializingBean, PostTranslatio
 
 						// Create new consumer for MVV update topics
 						Session session = brokerCepService.getBrokerCepBridge().getSession();
-						Topic destinations = session.createTopic(properties.getMvvUpdateTopic());
+						Topic destinations = session.createTopic(properties.getMvvUpdateTopic()+"*");
 						this.consumer = session.createConsumer(destinations);
 						consumer.setMessageListener(this::onMessage);
-						log.info("Subscribed to MVV update topics: {}", properties.getMvvUpdateTopic());
+						log.info("Subscribed to MVV update topics: {}*", properties.getMvvUpdateTopic());
 
 						if (initTask!=null) {
 							initTask.cancel(true);
@@ -98,8 +98,8 @@ public class MvvUpdateMonitorService implements InitializingBean, PostTranslatio
 				mvvName = amqMessage.getDestination().getPhysicalName();
 				log.debug("MVV update message topic: {}", mvvName);
 			}
-			if (Strings.CS.startsWith(mvvName, "mvv."))
-				mvvName = Strings.CS.removeStart(mvvName, "mvv.");
+			if (Strings.CS.startsWith(mvvName, properties.getMvvUpdateTopic()))
+				mvvName = Strings.CS.removeStart(mvvName, properties.getMvvUpdateTopic());
 			log.debug("MVV constant: {}", mvvName);
 
 			log.debug("Message type: {}", message.getClass().getName());
