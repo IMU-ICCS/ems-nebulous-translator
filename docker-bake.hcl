@@ -93,7 +93,7 @@ target "builder" {
   inherits = ["common"]
   target   = "ems-nebulous-translator-builder"
   tags = [
-    "${REGISTRY}/ems-nebulous-translator-builder:${COMMIT_SHA}-${ARCH_TAG}",
+    "${REGISTRY}/ems-server-nebulous-builder:${COMMIT_SHA}-${ARCH_TAG}",
   ]
 }
 

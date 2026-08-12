@@ -153,6 +153,18 @@ jobs:
           COMMIT_SHA="${{ needs.metadata.outputs.commit_sha }}"
           COMMIT_SAFE_TIME="${{ needs.metadata.outputs.safe_time }}"
 
+          # Build and push builder image
+          SRC_AMD64="${REGISTRY}/ems-server-nebulous-builder:${COMMIT_SHA}-amd64"
+          SRC_ARM64="${REGISTRY}/ems-server-nebulous-builder:${COMMIT_SHA}-arm64"
+
+          docker buildx imagetools create \
+            -t "${REGISTRY}/ems-server-nebulous-builder:${NEBULOUS_VERSION}" \
+            -t "${REGISTRY}/ems-server-nebulous-builder:latest" \
+            -t "${REGISTRY}/ems-server-nebulous-builder:${COMMIT_SHA}" \
+            -t "${REGISTRY}/ems-server-nebulous-builder:${COMMIT_SHA}-${COMMIT_SAFE_TIME}" \
+            "${SRC_AMD64}" "${SRC_ARM64}"
+          
+          # Build and push EMS server image
           SRC_AMD64="${REGISTRY}/ems-server-nebulous:${COMMIT_SHA}-amd64"
           SRC_ARM64="${REGISTRY}/ems-server-nebulous:${COMMIT_SHA}-arm64"
 
