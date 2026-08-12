@@ -54,13 +54,12 @@ variable "CACHE_REGISTRY" {
 
 
 group "default" {
-  targets = ["plugin"]
+  targets = ["builder", "plugin"]
 }
 
-target "plugin" {
+target "common" {
   context    = "."
   dockerfile = "Dockerfile"
-  target     = "ems-server-with-nebulous-translator"
 
   platforms = [PLATFORM]
 
@@ -88,6 +87,20 @@ target "plugin" {
                         ? ["type=registry,ref=${CACHE_REGISTRY}/ems-server-nebulous-cache:${ARCH_TAG},mode=max"]
                         : ["type=gha,scope=ems-nebulous-${ARCH_TAG},mode=max"]
                 )
+}
+
+target "builder" {
+  inherits = ["common"]
+  target   = "ems-nebulous-translator-builder"
+  tags = [
+    "${REGISTRY}/ems-nebulous-translator-builder:${COMMIT_SHA}-${ARCH_TAG}",
+  ]
+}
+
+
+target "plugin" {
+  inherits = ["common"]
+  target     = "ems-server-with-nebulous-translator"
 
   tags = [
     "${REGISTRY}/ems-server-nebulous:${COMMIT_SHA}-${ARCH_TAG}",
