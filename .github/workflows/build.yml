@@ -8,6 +8,7 @@ on:
 #      - "r*"
 #      - "test"
     paths-ignore:
+      - ".github/workflows/build-client.yml"
       - "ems-client-with-metricsfilter/**"
       - "metric-model/**"
   repository_dispatch:

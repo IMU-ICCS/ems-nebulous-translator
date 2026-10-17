@@ -8,6 +8,7 @@ on:
 #      - "r*"
 #      - "test"
     paths-ignore:
+      - ".github/workflows/build.yml"
       - "ems-nebulous-translator/**"
       - "metric-model/**"
       - "docker-bake.hcl"
@@ -121,4 +122,13 @@ jobs:
 
       - name: Build and push (${{ matrix.platform }})
         run: |
-          echo OK
+          export REGISTRY="${{ env.REGISTRY }}"
+          export COMMIT_SHA="${{ needs.metadata.outputs.commit_sha }}"
+          export COMMIT_SAFE_TIME="${{ needs.metadata.outputs.safe_time }}"
+          export PLATFORM="${{ matrix.platform }}"
+          export ARCH_TAG="${{ matrix.arch_tag }}"
+          export CORE_CLIENT_REF="${{ needs.preflight.outputs.client_ref }}"
+          export CORE_BUILDER_REF="${{ needs.preflight.outputs.builder_ref }}"
+          set
+
+          docker buildx bake --push
