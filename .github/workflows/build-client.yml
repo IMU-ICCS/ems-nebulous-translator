@@ -130,7 +130,10 @@ jobs:
           export CORE_CLIENT_REF="${{ needs.preflight.outputs.client_ref }}"
           export CORE_BUILDER_REF="${{ needs.preflight.outputs.builder_ref }}"
 
-          docker buildx bake --push
+          docker buildx bake \
+              -f ems-client-with-metricsfilter/docker-bake.hcl \
+              --set '*.context=ems-client-with-metricsfilter' \
+          --push
 
   # ---------------------------------------------------
   # 4. Merge per-arch images into multi-platform manifests
