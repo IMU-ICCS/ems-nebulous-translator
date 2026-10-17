@@ -56,7 +56,7 @@ jobs:
           BUILDER_IMAGE="${REGISTRY}/ems-server-core-builder:${CORE_VERSION}"
 
           echo "Checking $CLIENT_IMAGE ..."
-          CLIENT_DIGEST=$(docker buildx imagetools inspect "CLIENT_IMAGE" --format '{{json .Manifest}}' | jq -r '.digest')
+          CLIENT_DIGEST=$(docker buildx imagetools inspect "$CLIENT_IMAGE" --format '{{json .Manifest}}' | jq -r '.digest')
           echo "Checking $BUILDER_IMAGE ..."
           BUILDER_DIGEST=$(docker buildx imagetools inspect "$BUILDER_IMAGE" --format '{{json .Manifest}}' | jq -r '.digest')
 
