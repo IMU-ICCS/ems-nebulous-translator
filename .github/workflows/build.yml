@@ -2,7 +2,7 @@ name: EMS Nebulous Translator Plugin Build
 
 on:
   push:
-#    branches: [ main ]
+    branches: [ main ]
     tags:
       - "v*"
       - "r*"
