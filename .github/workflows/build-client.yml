@@ -2,14 +2,13 @@ name: EMS client with Metrics Filter
 
 on:
   push:
-    branches: [ main ]
+#    branches: [ main ]
     tags:
       - "v*"
       - "r*"
       - "test"
-    paths-ignore:
-      - "metric-model/**"
-      - "ems-nebulous-translator/**"
+    paths:
+      - "ems-client-with-metricsfilter/**"
   repository_dispatch:
     types: [core-published]
   workflow_dispatch: {}
