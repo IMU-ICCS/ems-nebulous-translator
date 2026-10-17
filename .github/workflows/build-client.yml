@@ -9,6 +9,7 @@ on:
 #      - "test"
     paths-ignore:
       - ".github/workflows/build.yml"
+      - ".github/workflows/release.yml"
       - "ems-nebulous-translator/**"
       - "metric-model/**"
       - "docker-bake.hcl"
@@ -16,6 +17,7 @@ on:
   repository_dispatch:
     types: [core-published]
   workflow_dispatch: {}
+  workflow_call:
 
 concurrency:
   group: ems-client-with-metricsfilter-workflow

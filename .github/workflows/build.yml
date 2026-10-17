@@ -9,11 +9,13 @@ on:
 #      - "test"
     paths-ignore:
       - ".github/workflows/build-client.yml"
+      - ".github/workflows/release.yml"
       - "ems-client-with-metricsfilter/**"
       - "metric-model/**"
   repository_dispatch:
     types: [core-published]
   workflow_dispatch: {}
+  workflow_call:
 
 concurrency:
   group: ems-nebulous-workflow
