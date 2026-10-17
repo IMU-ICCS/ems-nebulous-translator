@@ -153,7 +153,7 @@ jobs:
           COMMIT_SHA="${{ needs.metadata.outputs.commit_sha }}"
           COMMIT_SAFE_TIME="${{ needs.metadata.outputs.safe_time }}"
 
-        # Build and push EMS client with metrics filter image
+          # Build and push EMS client with metrics filter image
           SRC_AMD64="${REGISTRY}/ems-client-with-metricsfilter:${COMMIT_SHA}-amd64"
           SRC_ARM64="${REGISTRY}/ems-client-with-metricsfilter:${COMMIT_SHA}-arm64"
           
