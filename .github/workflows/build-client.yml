@@ -3,10 +3,6 @@ name: EMS client with Metrics Filter
 on:
   push:
     branches: [ main ]
-#    tags:
-#      - "v*"
-#      - "r*"
-#      - "test"
     paths-ignore:
       - ".github/workflows/build.yml"
       - ".github/workflows/release.yml"
