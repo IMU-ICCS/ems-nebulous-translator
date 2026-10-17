@@ -7,8 +7,11 @@ on:
 #      - "v*"
 #      - "r*"
 #      - "test"
-    paths:
-      - "ems-client-with-metricsfilter/**"
+    paths-ignore:
+      - "ems-nebulous-translator/**"
+      - "metric-model/**"
+      - "docker-bake.hcl"
+      - "Dockerfile*"
   repository_dispatch:
     types: [core-published]
   workflow_dispatch: {}
