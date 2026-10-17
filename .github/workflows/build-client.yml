@@ -3,10 +3,10 @@ name: EMS client with Metrics Filter
 on:
   push:
     branches: [ main ]
-    tags:
-      - "v*"
-      - "r*"
-      - "test"
+#    tags:
+#      - "v*"
+#      - "r*"
+#      - "test"
     paths:
       - "ems-client-with-metricsfilter/**"
   repository_dispatch:
