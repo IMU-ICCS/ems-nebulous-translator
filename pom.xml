@@ -19,6 +19,7 @@
 
     <modules>
         <module>../ems-main/ems-core</module>
+        <module>ems-client-with-metricsfilter</module>
         <module>ems-nebulous-translator</module>
     </modules>
 

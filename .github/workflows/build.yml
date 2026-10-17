@@ -8,6 +8,7 @@ on:
       - "r*"
       - "test"
     paths-ignore:
+      - "ems-client-with-metricsfilter/**"
       - "metric-model/**"
   repository_dispatch:
     types: [core-published]
