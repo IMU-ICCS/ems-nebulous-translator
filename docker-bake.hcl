@@ -54,8 +54,8 @@ variable "CACHE_REGISTRY" {
 
 
 group "default" {
-#   targets = ["builder", "plugin"]
-  targets = ["plugin"]
+  targets = ["builder", "plugin"]
+#   targets = ["plugin"]
 }
 
 target "common" {
@@ -90,13 +90,13 @@ target "common" {
                 )
 }
 
-# target "builder" {
-#   inherits = ["common"]
-#   target   = "ems-nebulous-translator-builder"
-#   tags = [
-#     "${REGISTRY}/ems-server-nebulous-builder:${COMMIT_SHA}-${ARCH_TAG}",
-#   ]
-# }
+target "builder" {
+  inherits = ["common"]
+  target   = "ems-nebulous-translator-builder"
+  tags = [
+    "${REGISTRY}/ems-server-nebulous-builder:${COMMIT_SHA}-${ARCH_TAG}",
+  ]
+}
 
 
 target "plugin" {
