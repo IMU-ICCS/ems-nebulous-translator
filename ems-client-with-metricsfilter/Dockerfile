@@ -32,7 +32,7 @@ COPY ./pom.xml      ${BUILD_DIR}/ems-client-with-metricsfilter/pom.xml
 RUN mvn -q -B -ntp dependency:go-offline
 
 # Copy source
-COPY ./*  ${BUILD_DIR}/ems-client-with-metricsfilter
+COPY .  ${BUILD_DIR}/ems-client-with-metricsfilter/
 
 # Build plugin
 #RUN --mount=type=cache,target=/root/.m2,id=maven-cache \
