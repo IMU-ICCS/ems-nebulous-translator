@@ -54,7 +54,8 @@ variable "CACHE_REGISTRY" {
 
 
 group "default" {
-  targets = ["builder", "client"]
+#   targets = ["builder", "client"]
+  targets = ["client"]
 }
 
 target "common" {
@@ -89,13 +90,13 @@ target "common" {
                 )
 }
 
-target "builder" {
-  inherits = ["common"]
-  target   = "ems-client-with-metricsfilter-builder"
-  tags = [
-    "${REGISTRY}/ems-client-with-metricsfilter-builder:${COMMIT_SHA}-${ARCH_TAG}",
-  ]
-}
+# target "builder" {
+#   inherits = ["common"]
+#   target   = "ems-client-with-metricsfilter-builder"
+#   tags = [
+#     "${REGISTRY}/ems-client-with-metricsfilter-builder:${COMMIT_SHA}-${ARCH_TAG}",
+#   ]
+# }
 
 
 target "client" {
