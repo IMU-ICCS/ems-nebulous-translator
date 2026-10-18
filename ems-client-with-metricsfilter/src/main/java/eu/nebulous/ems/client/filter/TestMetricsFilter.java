@@ -18,26 +18,26 @@ import java.time.LocalTime;
 
 @Slf4j
 @Service
-public class TestMetricFilter implements IMetricsFilter, InitializingBean {
+public class TestMetricsFilter implements IMetricsFilter, InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        log.warn(">>>>>>>>>>>>>>>>> TestMetricFilter initialized");
+        log.info(">>>>>>>>>>>>>>>>> TestMetricFilter initialized");
     }
 
     @Override
     public Context prePublishMetric(String metricName, double metricValue, String nodeAddress) {
-        log.warn(">>>>>>>>>>>>>>>>> prePublishMetric: name={}, value={}, nodeAddress={}", metricName, metricValue, nodeAddress);
+        log.info(">>>>>>>>>>>>>>>>> prePublishMetric: name={}, value={}, nodeAddress={}", metricName, metricValue, nodeAddress);
         return new IMetricsFilter.Context(LocalTime.now().getSecond()<30, this);
     }
 
     @Override
     public void postPublishMetric(String metricName, double metricValue, String nodeAddress, Context context) {
-        log.warn(">>>>>>>>>>>>>>>>> postPublishMetric: name={}, value={}, nodeAddress={}, context={}", metricName, metricValue, nodeAddress, context);
+        log.info(">>>>>>>>>>>>>>>>> postPublishMetric: name={}, value={}, nodeAddress={}, context={}", metricName, metricValue, nodeAddress, context);
     }
 
     @Override
     public void notPublishedMetric(String metricName, double metricValue, String nodeAddress, Context context) {
-        log.warn(">>>>>>>>>>>>>>>>> notPublishedMetric: name={}, value={}, nodeAddress={}, context={}", metricName, metricValue, nodeAddress, context);
+        log.info(">>>>>>>>>>>>>>>>> notPublishedMetric: name={}, value={}, nodeAddress={}, context={}", metricName, metricValue, nodeAddress, context);
     }
 }

@@ -49,7 +49,7 @@ ARG BUILD_DIR=/build
 
 ENV SCAN_PACKAGES=eu.nebulous.ems \
     IP_SETTING=DEFAULT_IP         \
-    SELF_HEALING_ENABLED=false
+    LOGGING_LEVEL_EU_NEBULOUS_EMS_CLIENT_FILTER=INFO
 
 RUN --mount=type=bind,from=ems-client-with-metricsfilter-builder,source=${BUILD_DIR}/ems-client-with-metricsfilter/target,target=/tmp/target \
     cp -f  /tmp/target/ems-client-with-metricsfilter-*.jar  /opt/baguette-client/jars/ && \
