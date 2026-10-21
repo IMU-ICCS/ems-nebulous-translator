@@ -328,6 +328,10 @@ class MetricsHelper extends AbstractHelper {
 
         // Process 'ref'
         refStr = refStr.replace("[", "").replace("]", "");
+        if (refStr.contains(".")) {
+            refStr = StringUtils.substringAfterLast(refStr, ".");
+        }
+
         NamesKey referencedNamesKey = createNamesKey(parentNamesKey, refStr);
         MetricContext referencedMetric = $$(_TC).metricsUsed.get(referencedNamesKey);
         if (referencedMetric==null) {
