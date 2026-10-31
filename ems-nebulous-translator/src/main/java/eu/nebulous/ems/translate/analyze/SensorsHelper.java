@@ -166,6 +166,7 @@ class SensorsHelper extends AbstractHelper implements InitializingBean {
         Interval interval = Interval.builder()
                 .period(period)
                 .unit(periodUnit)
+                .defaultPeriod(schedule==null)
                 .build();
 
         // Create pull sensor
