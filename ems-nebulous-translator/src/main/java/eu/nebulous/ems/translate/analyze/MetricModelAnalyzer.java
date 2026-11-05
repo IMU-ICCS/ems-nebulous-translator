@@ -13,6 +13,7 @@ import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.ParseContext;
 import eu.nebulous.ems.translate.NebulousEmsTranslatorProperties;
+import gr.iccs.imu.ems.api.EmsConstant;
 import gr.iccs.imu.ems.translate.Grouping;
 import gr.iccs.imu.ems.translate.TranslationContext;
 import gr.iccs.imu.ems.translate.dag.DAGNode;
@@ -23,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -72,6 +74,26 @@ public class MetricModelAnalyzer {
             log.debug("MetricModelAnalyzer.analyzeModel(): Set full name pattern to: {}", properties.getFullNamePattern());
             _TC.setFullNamePattern(properties.getFullNamePattern());
         }
+
+        // ----- Process metadata for common specifications -----
+        log.debug("MetricModelAnalyzer.analyzeModel(): Process metadata specs");
+        LinkedHashMap<String, Object> metadataSpecs = new LinkedHashMap<>();
+        if (topLevelModelElements.containsKey("metadata")) {
+            Map metadataSpecsMap = ctx.read("$.metadata", Map.class);
+            if (metadataSpecsMap!=null) {
+                metadataSpecsMap.forEach((k,v) -> {
+                    if (k!=null && v!=null && k instanceof String metadataKey && StringUtils.isNotBlank(metadataKey)) {
+                        metadataKey = metadataKey.trim();
+                        if (! Strings.CS.containsAny(metadataKey, "name", "labels", "tags")) {
+                            if (v instanceof Map metadataValue && ! metadataValue.isEmpty()) {
+                                metadataSpecs.put(metadataKey, metadataValue);
+                            }
+                        }
+                    }
+                });
+            }
+        }
+        _TC.getAdditionalArguments().put(EmsConstant.COLLECTOR_CONFIGURATIONS_EXTRA_VAR, metadataSpecs);
 
         // ----- Process function specifications -----
         log.debug("MetricModelAnalyzer.analyzeModel(): Process function specs");
